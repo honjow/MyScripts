@@ -15,7 +15,7 @@ function cookieNeteaseMusicBean() {
     const pc = `http://music.163.com/api/point/dailyTask?type=1`;
     const mobile = `http://music.163.com/api/point/dailyTask?type=0`;
 
-    const cookieVal = $prefs.valueForKey(cookieKey);
+    const cookieVal = $init.read(cookieKey)
 
     let signInfo = {
         pc: {
@@ -96,7 +96,7 @@ function checkResult(signInfo) {
             } else {
                 detail += `${signInfo.app.title} 未知错误，详见日志!!`;
             }
-            $notify(title, subTitle, detail);
+            $init.notify(title, subTitle, detail);
         }
     } catch (e) {
         console.log(`网易云音乐签到-error:${e}`);
