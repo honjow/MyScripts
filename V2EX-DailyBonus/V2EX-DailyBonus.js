@@ -27,7 +27,7 @@ function v2exBean() {
             let subTitle = `签到结果: 签到跳过`
             let detail = `今天已经签过了`
             console.log(`${title}, ${subTitle}, ${detail}`)
-            $notify(title, subTitle, detail)
+            $init.notify(title, subTitle, detail)
         } else {
             signMission(data.match(/<input[^>]*\/mission\/daily\/redeem\?once=(\d+)[^>]*>/)[1])
         }
