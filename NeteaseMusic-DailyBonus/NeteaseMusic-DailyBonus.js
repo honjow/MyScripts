@@ -2,8 +2,6 @@ const $nobyda = nobyda();
 const cookieName = "网易云音乐";
 const cookieKey = "CookieNeteaseMusic";
 
-const pc = `http://music.163.com/api/point/dailyTask?type=1`
-const mobile = `http://music.163.com/api/point/dailyTask?type=0`
 
 if ($nobyda.isRequest) {
     GetCookie()
@@ -14,74 +12,100 @@ if ($nobyda.isRequest) {
 }
 
 function cookieNeteaseMusicBean() {
-    let url = {
-        url: null,
+    const pc = `http://music.163.com/api/point/dailyTask?type=1`;
+    const mobile = `http://music.163.com/api/point/dailyTask?type=0`;
+
+    const cookieVal = $prefs.valueForKey(cookieKey);
+
+    let signInfo = {
+        pc: {
+            processed: false,
+            title: `PC端  `,
+            resultCode: 0,
+            resultMsg: ''
+        },
+        app: {
+            processed: false,
+            title: `APP端`,
+            resultCode: 0,
+            resultMsg: ''
+        },
+    };
+    let pcUrl = {
+        url: pc,
         headers: {
-            Cookie: $nobyda.read(cookieKey)
+            Cookie: cookieVal
         }
-    }
-
-    let signinfo = {}
-
-    url.url = pc
-    $task.fetch(url).then((response) => {
-        let data = response.body
-        let result = JSON.parse(data)
-        signinfo.pc = {
-            title: `网易云音乐(PC)`,
-            success: result.code == 200 || result.code == -2 ? true : false,
-            skiped: result.code == -2 ? true : false,
-            resultCode: result.code,
-            resultMsg: result.msg
+    };
+    let appUrl = {
+        url: mobile,
+        headers: {
+            Cookie: cookieVal
         }
-        console.log(`开始签到: ${signinfo.pc.title}, 编码: ${result.code}, 原因: ${result.msg}`)
+    };
+    $task.fetch(pcUrl).then(response => {
+        let result = JSON.parse(response.body)
+        signInfo.pc.processed = true;
+        signInfo.pc.resultCode = result.code;
+        signInfo.pc.resultMsg = result.msg;
+        console.log(`${signInfo.pc.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
+        checkResult(signInfo);
+    }, reason => {
+        signInfo.pc.processed = true;
+        signInfo.pc.resultCode = 999;
+        console.log(`网易云音乐(PC) 签到错误:${reason.error}`);
+        checkResult(signInfo);
+    });
+
+    $task.fetch(appUrl).then(response => {
+        let result = JSON.parse(response.body)
+        signInfo.app.processed = true;
+        signInfo.app.resultCode = result.code;
+        signInfo.app.resultMsg = result.msg;
+        console.log(`${signInfo.app.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
+        checkResult(signInfo);
+    }, reason => {
+        signInfo.app.processed = true;
+        signInfo.app.resultCode = 999;
+        console.log(`网易云音乐(APP) 签到错误:${reason.error}`);
+        checkResult(signInfo);
     })
-
-    url.url = mobile
-    $task.fetch(url).then((response) => {
-        let data = response.body
-        let result = JSON.parse(data)
-        signinfo.app = {
-            title: `网易云音乐(APP)`,
-            success: result.code == 200 || result.code == -2 ? true : false,
-            skiped: result.code == -2 ? true : false,
-            resultCode: result.code,
-            resultMsg: result.msg
-        }
-        console.log(`开始签到: ${signinfo.app.title}, 编码: ${result.code}, 原因: ${result.msg}`)
-    })
-    check(signinfo)
 }
 
-function check(signinfo, checkms = 0) {
-    if (signinfo.pc && signinfo.app) {
-        log(signinfo)
-        $done({})
-    } else {
-        if (checkms > 5000) {
-            $done({})
-        } else {
-            setTimeout(() => check(signinfo, checkms + 100), 100)
+function checkResult(signInfo) {
+    try {
+        if (signInfo.pc.processed && signInfo.app.processed) {
+            let title = '网易云音乐';
+            let subTitle = '双端签到完毕，签到结果：';
+            let detail = '';
+            if (signInfo.pc.resultCode == 200) {
+                detail += `${signInfo.pc.title} 签到成功🎉
+  `;
+            } else if (signInfo.pc.resultCode == -2) {
+                detail += `${signInfo.pc.title} 重复签到🎉
+  `;
+            } else if (signInfo.pc.resultCode == 999) {
+                detail += `${signInfo.pc.title} 签到失败，详见日志!!
+  `;
+            } else {
+                detail += `${signInfo.pc.title} 未知错误，详见日志!!
+  `;
+            }
+            if (signInfo.app.resultCode == 200) {
+                detail += `${signInfo.app.title} 签到成功🎉`;
+            } else if (signInfo.app.resultCode == -2) {
+                detail += `${signInfo.app.title} 重复签到🎉`;
+            } else if (signInfo.app.resultCode == 999) {
+                detail += `${signInfo.app.title} 签到失败，详见日志!!`;
+            } else {
+                detail += `${signInfo.app.title} 未知错误，详见日志!!`;
+            }
+            $notify(title, subTitle, detail);
         }
+    } catch (e) {
+        console.log(`网易云音乐签到-error:${e}`);
     }
-}
 
-function log(signinfo) {
-    let title = `${cookieName}`
-    let subTitle = ""
-    let detail = `今日共签: ${signinfo.signedCnt}, 本次成功: ${signinfo.successCnt}, 本次失败: ${signinfo.failedCnt}`
-
-    if (signinfo.pc.success && signinfo.app.success) {
-        subTitle = `签到结果: 全部成功`
-        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}`
-    } else if (!signinfo.pc.success && !signinfo.app.success) {
-        subTitle = `签到结果: 全部失败`
-        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}, 详见日志!`
-    } else {
-        subTitle = ``
-        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}, 详见日志!`
-    }
-    $notify(title, subTitle, detail)
 }
 
 function GetCookie() {
