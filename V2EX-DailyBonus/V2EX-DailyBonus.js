@@ -1,14 +1,14 @@
 const log = true;
-const $nobyda = nobyda();
+const $init = init();
 const cookieName = "v2ex";
 const cookieKey = "CookieV2EX";
 
-if ($nobyda.isRequest) {
+if ($init.isRequest) {
     GetCookie()
-    $nobyda.end()
+    $init.end()
 } else {
     v2exBean()
-    $nobyda.end()
+    $init.end()
 }
 
 
@@ -17,7 +17,7 @@ function v2exBean() {
         url: `https://www.v2ex.com/mission/daily`,
         method: 'GET',
         headers: {
-            Cookie: $nobyda.read(cookieKey)
+            Cookie: $init.read(cookieKey)
         }
     }
     $task.fetch(url).then((response) => {
@@ -37,31 +37,31 @@ function v2exBean() {
 function GetCookie() {
     if ($request.headers) {
         var CookieValue = $request.headers['Cookie'];
-        if ($nobyda.read(cookieKey) != (undefined || null)) {
-            if ($nobyda.read(cookieKey) != CookieValue) {
-                var cookie = $nobyda.write(CookieValue, cookieKey);
+        if ($init.read(cookieKey) != (undefined || null)) {
+            if ($init.read(cookieKey) != CookieValue) {
+                var cookie = $init.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $nobyda.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $nobyda.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
-            var cookie = $nobyda.write(CookieValue, cookieKey);
+            var cookie = $init.write(CookieValue, cookieKey);
             if (!cookie) {
-                $nobyda.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $nobyda.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
-        $nobyda.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
 
 
 
-function nobyda() {
+function init() {
     const isRequest = typeof $request != "undefined"
     const isSurge = typeof $httpClient != "undefined"
     const isQuanX = typeof $task != "undefined"
