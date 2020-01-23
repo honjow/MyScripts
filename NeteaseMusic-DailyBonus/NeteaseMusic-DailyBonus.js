@@ -1,37 +1,87 @@
-const log = true;
 const $nobyda = nobyda();
-const cookieName = "v2ex";
-const cookieKey = "CookieV2EX";
+const cookieName = "网易云音乐";
+const cookieKey = "CookieNeteaseMusic";
+
+const pc = `http://music.163.com/api/point/dailyTask?type=1`
+const mobile = `http://music.163.com/api/point/dailyTask?type=0`
 
 if ($nobyda.isRequest) {
     GetCookie()
     $nobyda.end()
 } else {
-    v2exBean()
+    cookieNeteaseMusicBean()
     $nobyda.end()
 }
 
-
-function v2exBean() {
+function cookieNeteaseMusicBean() {
     let url = {
-        url: `https://www.v2ex.com/mission/daily`,
-        method: 'GET',
+        url: null,
         headers: {
             Cookie: $nobyda.read(cookieKey)
         }
     }
+
+    let signinfo = {}
+
+    url.url = pc
     $task.fetch(url).then((response) => {
         let data = response.body
-        if (data.indexOf('每日登录奖励已领取') >= 0) {
-            let title = `${cookieName}`
-            let subTitle = `签到结果: 签到跳过`
-            let detail = `今天已经签过了`
-            console.log(`${title}, ${subTitle}, ${detail}`)
-            $notify(title, subTitle, detail)
-        } else {
-            signMission(data.match(/<input[^>]*\/mission\/daily\/redeem\?once=(\d+)[^>]*>/)[1])
+        let result = JSON.parse(data)
+        signinfo.pc = {
+            title: `网易云音乐(PC)`,
+            success: result.code == 200 || result.code == -2 ? true : false,
+            skiped: result.code == -2 ? true : false,
+            resultCode: result.code,
+            resultMsg: result.msg
         }
+        console.log(`开始签到: ${signinfo.pc.title}, 编码: ${result.code}, 原因: ${result.msg}`)
     })
+
+    url.url = mobile
+    $task.fetch(url).then((response) => {
+        let data = response.body
+        let result = JSON.parse(data)
+        signinfo.app = {
+            title: `网易云音乐(APP)`,
+            success: result.code == 200 || result.code == -2 ? true : false,
+            skiped: result.code == -2 ? true : false,
+            resultCode: result.code,
+            resultMsg: result.msg
+        }
+        console.log(`开始签到: ${signinfo.app.title}, 编码: ${result.code}, 原因: ${result.msg}`)
+    })
+    check(signinfo)
+}
+
+function check(signinfo, checkms = 0) {
+    if (signinfo.pc && signinfo.app) {
+        log(signinfo)
+        $done({})
+    } else {
+        if (checkms > 5000) {
+            $done({})
+        } else {
+            setTimeout(() => check(signinfo, checkms + 100), 100)
+        }
+    }
+}
+
+function log(signinfo) {
+    let title = `${cookieName}`
+    let subTitle = ""
+    let detail = `今日共签: ${signinfo.signedCnt}, 本次成功: ${signinfo.successCnt}, 本次失败: ${signinfo.failedCnt}`
+
+    if (signinfo.pc.success && signinfo.app.success) {
+        subTitle = `签到结果: 全部成功`
+        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}`
+    } else if (!signinfo.pc.success && !signinfo.app.success) {
+        subTitle = `签到结果: 全部失败`
+        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}, 详见日志!`
+    } else {
+        subTitle = ``
+        detail = `PC: ${signinfo.pc.success ? '成功' : '失败'}, APP: ${signinfo.app.success ? '成功' : '失败'}, 详见日志!`
+    }
+    $notify(title, subTitle, detail)
 }
 
 function GetCookie() {
