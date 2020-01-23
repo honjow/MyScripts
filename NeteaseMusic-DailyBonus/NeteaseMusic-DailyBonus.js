@@ -79,17 +79,13 @@ function checkResult(signInfo) {
             let subTitle = '双端签到完毕，签到结果：';
             let detail = '';
             if (signInfo.pc.resultCode == 200) {
-                detail += `${signInfo.pc.title} 签到成功🎉
-  `;
+                detail += `${signInfo.pc.title} 签到成功🎉\n`;
             } else if (signInfo.pc.resultCode == -2) {
-                detail += `${signInfo.pc.title} 重复签到🎉
-  `;
+                detail += `${signInfo.pc.title} 重复签到🎉\n`;
             } else if (signInfo.pc.resultCode == 999) {
-                detail += `${signInfo.pc.title} 签到失败，详见日志!!
-  `;
+                detail += `${signInfo.pc.title} 签到失败，详见日志!!\n`;
             } else {
-                detail += `${signInfo.pc.title} 未知错误，详见日志!!
-  `;
+                detail += `${signInfo.pc.title} 未知错误，详见日志!!\n`;
             }
             if (signInfo.app.resultCode == 200) {
                 detail += `${signInfo.app.title} 签到成功🎉`;
