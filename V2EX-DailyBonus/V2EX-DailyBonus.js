@@ -13,7 +13,7 @@ hostname = *.v2ex.com
 
 [task_local]
 # V2EX签到 表示10点32执行签到
-32 10 * * * MyScripts/V2EX-DailyBonus/V2EX-DailyBonus.js
+32 10 * * * V2EX-DailyBonus.js
 
 */
 
