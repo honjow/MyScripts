@@ -1,3 +1,23 @@
+/*
+ 网易云音乐二合一签到脚本
+
+[mimt]
+hostname = music.163.com,
+
+[rewrite_local]
+# 此处用于网易云音乐cookie获取，当失效时需浏览器访问并登录:https://music.163.com/m/login 获取cookie，待弹出获取成功时，可禁用此脚本
+^https?:\/\/music\.163\.com url script-request-header NeteaseMusic-DailyBonus.js
+
+
+# 这个最小是分钟开始,且只有五位的长度,您可改成* * * * *表示每分钟执行以测试效果.(分 时 日 月 星期)
+
+[task_local]
+# 网易云签到 表示10点30执行签到
+30 10 * * * NeteaseMusic-DailyBonus.js
+
+*/
+
+
 const $init = init();
 const cookieName = "网易云音乐";
 const cookieKey = "CookieNeteaseMusic";
