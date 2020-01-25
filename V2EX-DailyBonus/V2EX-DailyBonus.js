@@ -57,7 +57,9 @@ function v2exBean() {
 function signMission(code) {
     let url = {
         url: `https://www.v2ex.com/mission/daily/redeem?once=${code}`,
-        headers: { Cookie: $hon.read(cookieKey) }
+        headers: {
+            Cookie: $hon.read(cookieKey)
+        }
     }
     $hon.get(url, (error, response, data) => {
         if (!error) {
