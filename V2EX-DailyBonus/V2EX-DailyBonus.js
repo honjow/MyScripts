@@ -33,23 +33,45 @@ if ($hon.isRequest) {
 
 
 function v2exBean() {
+    // console.log("CookieV2EX: \n" + $hon.read(cookieKey))
     let url = {
         url: `https://www.v2ex.com/mission/daily`,
-        method: 'GET',
         headers: {
             Cookie: $hon.read(cookieKey)
         }
     }
-    $task.fetch(url).then((response) => {
-        let data = response.body
+    $hon.get(url, (error, response, data) => {
+
         if (data.indexOf('每日登录奖励已领取') >= 0) {
-            let title = `${cookieName}`
-            let subTitle = `签到结果: 签到跳过`
-            let detail = `今天已经签过了`
-            console.log(`${title}, ${subTitle}, ${detail}`)
+            let title = cookieName
+            let subTitle = "签到结果: 签到跳过"
+            let detail = "今天已经签过了"
+            // console.log(`${title}, ${subTitle}, ${detail}`)
             $hon.notify(title, subTitle, detail)
         } else {
             signMission(data.match(/<input[^>]*\/mission\/daily\/redeem\?once=(\d+)[^>]*>/)[1])
+        }
+    })
+}
+
+function signMission(code) {
+    let url = {
+        url: `https://www.v2ex.com/mission/daily/redeem?once=${code}`,
+        headers: { Cookie: $hon.read(cookieKey) }
+    }
+    $hon.get(url, (error, response, data) => {
+        if (data.indexOf('每日登录奖励已领取') >= 0) {
+            let title = `${cookieName}`
+            let subTitle = `签到结果: 签到成功  🎉`
+            let detail = ``
+            console.log(`${title}, ${subTitle}, ${detail}`)
+            $hon.notify(title, subTitle, detail)
+        } else {
+            let title = `${cookieName}`
+            let subTitle = `签到结果: 签到失败 !!!`
+            let detail = `详见日志`
+            console.log(`签到失败: ${cookieName}, data: ${data}`)
+            $hon.notify(title, subTitle, detail)
         }
     })
 }
