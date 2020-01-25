@@ -2,7 +2,6 @@
 签到部分代码来自 https://github.com/chavyleung/scripts/tree/master/smzdm/quanx
 
 
-测试中 ，暂不可用
 */
 
 const log = true;

@@ -1,7 +1,7 @@
 /*
  v2ex二合一签到脚本
 
-[mimt]
+[mitm]
 hostname = *.v2ex.com
 
 [rewrite_local]
