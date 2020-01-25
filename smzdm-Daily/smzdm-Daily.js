@@ -51,7 +51,7 @@ function smzdmBean() {
                 $hon.notify(title, subTitle, detail)
             }
         } else {
-            $nobyda.notify(title + "签到接口请求失败", "", error)
+            $hon.notify(title + "签到接口请求失败", "", error)
             console.error(title + " error :" + error)
         }
 

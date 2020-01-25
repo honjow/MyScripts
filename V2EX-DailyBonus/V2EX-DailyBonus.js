@@ -60,19 +60,25 @@ function signMission(code) {
         headers: { Cookie: $hon.read(cookieKey) }
     }
     $hon.get(url, (error, response, data) => {
-        if (data.indexOf('每日登录奖励已领取') >= 0) {
-            let title = `${cookieName}`
-            let subTitle = `签到结果: 签到成功  🎉`
-            let detail = ``
-            console.log(`${title}, ${subTitle}, ${detail}`)
-            $hon.notify(title, subTitle, detail)
+        if (!error) {
+            if (data.indexOf('每日登录奖励已领取') >= 0) {
+                let title = `${cookieName}`
+                let subTitle = `签到结果: 签到成功  🎉`
+                let detail = ``
+                console.log(`${title}, ${subTitle}, ${detail}`)
+                $hon.notify(title, subTitle, detail)
+            } else {
+                let title = `${cookieName}`
+                let subTitle = `签到结果: 签到失败 !!!`
+                let detail = `详见日志`
+                console.log(`签到失败: ${cookieName}, data: ${data}`)
+                $hon.notify(title, subTitle, detail)
+            }
         } else {
-            let title = `${cookieName}`
-            let subTitle = `签到结果: 签到失败 !!!`
-            let detail = `详见日志`
-            console.log(`签到失败: ${cookieName}, data: ${data}`)
-            $hon.notify(title, subTitle, detail)
+            $hon.notify(title + "签到接口请求失败", "", error)
+            console.error(title + " error :" + error)
         }
+
     })
 }
 
