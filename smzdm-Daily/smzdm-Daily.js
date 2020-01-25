@@ -6,46 +6,49 @@
 */
 
 const log = true;
-const $init = init();
+const $hon = init();
 const cookieName = "什么值得买";
 const cookieKey = "CookieSMZDM";
 
-if ($init.isRequest) {
+if ($hon.isRequest) {
     GetCookie()
-    $init.end()
+    $hon.end()
 } else {
     smzdmBean()
-    $init.end()
+    $hon.end()
 }
 
 
 function smzdmBean() {
+    console.log("开始签到")
+
     let url = {
         url: `https://zhiyou.smzdm.com/user/checkin/jsonp_checkin`,
         method: 'GET',
         headers: {
-            Cookie: $init.read(cookieKey),
+            Cookie: $hon.read(cookieKey),
             'Referer': 'http://www.smzdm.com/',
             'User-Agent': 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'
         }
     }
 
-    $init.get(url, (error, response, data) => {
-        console.log("response = " + response)
-
+    $hon.get(url, (error, response, data) => {
+        console.log("data = \n" + data)
         let title = cookieName
         if (!error) {
             // 签到成功
-            if (data == 0) {
-                let subTitle = `签到结果: 成功`
+            if (result.error_code == 0) {
+                let subTitle = "签到结果: 成功 🎉"
                 let detail = `累计: ${data.checkin_num}次, 经验: ${data.exp}, 金币: ${data.gold}, 积分: ${data.point}`
-                $init.notify(title, subTitle, detail)
+                $hon.notify(title, subTitle, detail)
             }
             // 签到失败
             else {
-                let subTitle = `签到结果: 失败`
-                let detail = ``
-                $init.notify(title, subTitle, detail)
+                let subTitle = "签到结果: 失败 😿"
+                let detail = data.error_msg
+
+                console.log(`${title}, ${subTitle}, ${detail}`)
+                $hon.notify(title, subTitle, detail)
             }
         } else {
             $nobyda.notify(title + "签到接口请求失败", "", error)
@@ -58,25 +61,25 @@ function smzdmBean() {
 function GetCookie() {
     if ($request.headers) {
         var CookieValue = $request.headers['Cookie'];
-        if ($init.read(cookieKey) != (undefined || null)) {
-            if ($init.read(cookieKey) != CookieValue) {
-                var cookie = $init.write(CookieValue, cookieKey);
+        if ($hon.read(cookieKey) != (undefined || null)) {
+            if ($hon.read(cookieKey) != CookieValue) {
+                var cookie = $hon.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
-            var cookie = $init.write(CookieValue, cookieKey);
+            var cookie = $hon.write(CookieValue, cookieKey);
             if (!cookie) {
-                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
-        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
 
