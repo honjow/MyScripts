@@ -20,11 +20,10 @@ if ($hon.isRequest) {
 
 
 function smzdmBean() {
-    console.log("开始签到")
+    // console.log("开始签到 \n CookieSMZDM:\n" + $hon.read(cookieKey))
 
     let url = {
         url: `https://zhiyou.smzdm.com/user/checkin/jsonp_checkin`,
-        method: 'GET',
         headers: {
             Cookie: $hon.read(cookieKey),
             'Referer': 'http://www.smzdm.com/',
@@ -32,9 +31,12 @@ function smzdmBean() {
         }
     }
 
-    $hon.get(url, (error, response, data) => {
-        console.log("data = \n" + data)
+    $hon.get(url, (error, response, body) => {
+        console.log("data = \n" + body)
+        let result = JSON.parse(body)
+        let data = result.data
         let title = cookieName
+
         if (!error) {
             // 签到成功
             if (result.error_code == 0) {
@@ -45,14 +47,14 @@ function smzdmBean() {
             // 签到失败
             else {
                 let subTitle = "签到结果: 失败 😿"
-                let detail = data.error_msg
+                let detail = result.error_msg
 
-                console.log(`${title}, ${subTitle}, ${detail}`)
+                console.log("error_msg: " + detail)
                 $hon.notify(title, subTitle, detail)
             }
         } else {
             $hon.notify(title + "签到接口请求失败", "", error)
-            console.error(title + " error :" + error)
+            console.log(title + " error :" + error)
         }
 
     })
@@ -82,7 +84,6 @@ function GetCookie() {
         $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
-
 
 
 function init() {
