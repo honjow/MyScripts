@@ -1,12 +1,12 @@
 const key = 'testkey'
-const value = '测试内容'
+const value_in = '测试内容'
 
 write()
 read()
 $done()
 
 function write() {
-    var rult = $persistentStore.write(value, key)
+    var rult = $persistentStore.write(value_in, key)
     if (!rult) {
         $notification.post("写入失败", "", "");
         console.log("写入失败")
@@ -18,12 +18,12 @@ function write() {
 
 
 function read() {
-  var value = $persistentStore.read(value, key)
-  if (!value) {
+  var value_out = $persistentStore.read(key)
+  if (!value_out) {
       $notification.post("读取失败", "", "");
       console.log("读取失败")
     } else {
       $notification.post("读取成功", "", "");
-      console.log("读取成功" + value)
+      console.log("读取成功" + value_out)
     }
 }
