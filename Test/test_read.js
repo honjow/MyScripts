@@ -1,6 +1,7 @@
 const key = 'testkey'
 read()
 $done()
+
 function read() {
     var value = $persistentStore.read(value, key)
     if (!value) {
