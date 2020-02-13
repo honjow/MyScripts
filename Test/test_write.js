@@ -11,7 +11,7 @@ function write() {
         $notification.post("写入失败", "", "");
         console.log("写入失败")
       } else {
-        $notification.post("写入成功", "", "");
+        $notification.post("写入成功123", "", "");
         console.log("写入成功")
       }
 }
