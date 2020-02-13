@@ -1,7 +1,7 @@
 /*
  网易云音乐二合一签到脚本
 
-[mimt]
+[mitm]
 hostname = music.163.com,
 
 [rewrite_local]
