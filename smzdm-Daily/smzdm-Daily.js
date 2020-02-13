@@ -2,54 +2,58 @@
 签到部分代码来自 https://github.com/chavyleung/scripts/tree/master/smzdm/quanx
 
 
-测试中 ，暂不可用
 */
 
 const log = true;
-const $init = init();
+const $hon = init();
 const cookieName = "什么值得买";
 const cookieKey = "CookieSMZDM";
 
-if ($init.isRequest) {
+if ($hon.isRequest) {
     GetCookie()
-    $init.end()
+    $hon.end()
 } else {
     smzdmBean()
-    $init.end()
+    $hon.end()
 }
 
 
 function smzdmBean() {
+    // console.log("开始签到 \n CookieSMZDM:\n" + $hon.read(cookieKey))
+
     let url = {
         url: `https://zhiyou.smzdm.com/user/checkin/jsonp_checkin`,
-        method: 'GET',
         headers: {
-            Cookie: $init.read(cookieKey),
+            Cookie: $hon.read(cookieKey),
             'Referer': 'http://www.smzdm.com/',
             'User-Agent': 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'
         }
     }
 
-    $init.get(url, (error, response, data) => {
-        console.log("response = " + response)
-
+    $hon.get(url, (error, response, body) => {
+        console.log("data = \n" + body)
+        let result = JSON.parse(body)
+        let data = result.data
         let title = cookieName
+
         if (!error) {
             // 签到成功
-            if (data == 0) {
-                let subTitle = `签到结果: 成功`
+            if (result.error_code == 0) {
+                let subTitle = "签到结果: 成功 🎉"
                 let detail = `累计: ${data.checkin_num}次, 经验: ${data.exp}, 金币: ${data.gold}, 积分: ${data.point}`
-                $init.notify(title, subTitle, detail)
+                $hon.notify(title, subTitle, detail)
             }
             // 签到失败
             else {
-                let subTitle = `签到结果: 失败`
-                let detail = ``
-                $init.notify(title, subTitle, detail)
+                let subTitle = "签到结果: 失败 😿"
+                let detail = result.error_msg
+
+                console.log("error_msg: " + detail)
+                $hon.notify(title, subTitle, detail)
             }
         } else {
-            $nobyda.notify(title + "签到接口请求失败", "", error)
-            console.error(title + " error :" + error)
+            $hon.notify(title + "签到接口请求失败", "", error)
+            console.log(title + " error :" + error)
         }
 
     })

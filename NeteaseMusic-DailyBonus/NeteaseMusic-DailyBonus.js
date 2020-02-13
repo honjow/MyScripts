@@ -18,24 +18,24 @@ hostname = music.163.com,
 */
 
 
-const $init = init();
+const $hon = init();
 const cookieName = "网易云音乐";
 const cookieKey = "CookieNeteaseMusic";
 
 
-if ($init.isRequest) {
+if ($hon.isRequest) {
     GetCookie()
-    $init.end()
+    $hon.end()
 } else {
     cookieNeteaseMusicBean()
-    $init.end()
+    $hon.end()
 }
 
 function cookieNeteaseMusicBean() {
     const pc = `http://music.163.com/api/point/dailyTask?type=1`;
     const mobile = `http://music.163.com/api/point/dailyTask?type=0`;
 
-    const cookieVal = $init.read(cookieKey)
+    const cookieVal = $hon.read(cookieKey)
 
     let signInfo = {
         pc: {
