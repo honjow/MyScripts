@@ -62,28 +62,27 @@ function smzdmBean() {
 function GetCookie() {
     if ($request.headers) {
         var CookieValue = $request.headers['Cookie'];
-        if ($init.read(cookieKey) != (undefined || null)) {
-            if ($init.read(cookieKey) != CookieValue) {
-                var cookie = $init.write(CookieValue, cookieKey);
+        if ($hon.read(cookieKey) != (undefined || null)) {
+            if ($hon.read(cookieKey) != CookieValue) {
+                var cookie = $hon.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
-            var cookie = $init.write(CookieValue, cookieKey);
+            var cookie = $hon.write(CookieValue, cookieKey);
             if (!cookie) {
-                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
-        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
-
 
 
 function init() {

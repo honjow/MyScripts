@@ -1,7 +1,7 @@
 /*
  v2ex二合一签到脚本
 
-[mimt]
+[mitm]
 hostname = *.v2ex.com
 
 [rewrite_local]
@@ -19,63 +19,93 @@ hostname = *.v2ex.com
 
 
 const log = true;
-const $init = init();
+const $hon = init();
 const cookieName = "v2ex";
 const cookieKey = "CookieV2EX";
 
-if ($init.isRequest) {
+if ($hon.isRequest) {
     GetCookie()
-    $init.end()
+    $hon.end()
 } else {
     v2exBean()
-    $init.end()
+    $hon.end()
 }
 
 
 function v2exBean() {
+    // console.log("CookieV2EX: \n" + $hon.read(cookieKey))
     let url = {
         url: `https://www.v2ex.com/mission/daily`,
-        method: 'GET',
         headers: {
-            Cookie: $init.read(cookieKey)
+            Cookie: $hon.read(cookieKey)
         }
     }
-    $task.fetch(url).then((response) => {
-        let data = response.body
+    $hon.get(url, (error, response, data) => {
+
         if (data.indexOf('每日登录奖励已领取') >= 0) {
-            let title = `${cookieName}`
-            let subTitle = `签到结果: 签到跳过`
-            let detail = `今天已经签过了`
-            console.log(`${title}, ${subTitle}, ${detail}`)
-            $init.notify(title, subTitle, detail)
+            let title = cookieName
+            let subTitle = "签到结果: 签到跳过"
+            let detail = "今天已经签过了"
+            // console.log(`${title}, ${subTitle}, ${detail}`)
+            $hon.notify(title, subTitle, detail)
         } else {
             signMission(data.match(/<input[^>]*\/mission\/daily\/redeem\?once=(\d+)[^>]*>/)[1])
         }
     })
 }
 
+function signMission(code) {
+    let url = {
+        url: `https://www.v2ex.com/mission/daily/redeem?once=${code}`,
+        headers: {
+            Cookie: $hon.read(cookieKey)
+        }
+    }
+    $hon.get(url, (error, response, data) => {
+        if (!error) {
+            if (data.indexOf('每日登录奖励已领取') >= 0) {
+                let title = `${cookieName}`
+                let subTitle = `签到结果: 签到成功  🎉`
+                let detail = ``
+                console.log(`${title}, ${subTitle}, ${detail}`)
+                $hon.notify(title, subTitle, detail)
+            } else {
+                let title = `${cookieName}`
+                let subTitle = `签到结果: 签到失败 !!!`
+                let detail = `详见日志`
+                console.log(`签到失败: ${cookieName}, data: ${data}`)
+                $hon.notify(title, subTitle, detail)
+            }
+        } else {
+            $hon.notify(title + "签到接口请求失败", "", error)
+            console.error(title + " error :" + error)
+        }
+
+    })
+}
+
 function GetCookie() {
     if ($request.headers) {
         var CookieValue = $request.headers['Cookie'];
-        if ($init.read(cookieKey) != (undefined || null)) {
-            if ($init.read(cookieKey) != CookieValue) {
-                var cookie = $init.write(CookieValue, cookieKey);
+        if ($hon.read(cookieKey) != (undefined || null)) {
+            if ($hon.read(cookieKey) != CookieValue) {
+                var cookie = $hon.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
-            var cookie = $init.write(CookieValue, cookieKey);
+            var cookie = $hon.write(CookieValue, cookieKey);
             if (!cookie) {
-                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
-        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
 
