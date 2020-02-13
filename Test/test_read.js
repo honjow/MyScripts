@@ -9,6 +9,6 @@ function read() {
         console.log("读取失败")
       } else {
         $notification.post("读取成功", "", "");
-        console.log("读取成功")
+        console.log("读取成功" + value)
       }
 }
