@@ -1,3 +1,10 @@
+/*
+签到部分代码来自 https://github.com/chavyleung/scripts/tree/master/smzdm/quanx
+
+
+测试中 ，暂不可用
+*/
+
 const log = true;
 const $init = init();
 const cookieName = "什么值得买";
@@ -24,19 +31,27 @@ function smzdmBean() {
     }
 
     $init.get(url, (error, response, data) => {
-        // 签到成功
-        if (data == 0) {
-            let subTitle = `签到结果: 成功`
-            let detail = `累计: ${data.checkin_num}次, 经验: ${data.exp}, 金币: ${data.gold}, 积分: ${data.point}`
-            $init.notify(title, subTitle, detail)
+        console.log("response = " + response)
+
+        let title = cookieName
+        if (!error) {
+            // 签到成功
+            if (data == 0) {
+                let subTitle = `签到结果: 成功`
+                let detail = `累计: ${data.checkin_num}次, 经验: ${data.exp}, 金币: ${data.gold}, 积分: ${data.point}`
+                $init.notify(title, subTitle, detail)
+            }
+            // 签到失败
+            else {
+                let subTitle = `签到结果: 失败`
+                let detail = ``
+                $init.notify(title, subTitle, detail)
+            }
+        } else {
+            $nobyda.notify(title + "签到接口请求失败", "", error)
+            console.error(title + " error :" + error)
         }
-        // 签到失败
-        else {
-            let subTitle = `签到结果: 失败`
-            let detail = ``
-            $init.notify(title, subTitle, detail)
-        }
-        console.log(`${cookieName}, data: ${data}`)
+
     })
 }
 
