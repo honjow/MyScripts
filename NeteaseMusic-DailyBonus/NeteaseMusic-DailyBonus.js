@@ -18,24 +18,24 @@ hostname = music.163.com,
 */
 
 
-const $hon = init();
+const $init = init();
 const cookieName = "网易云音乐";
 const cookieKey = "CookieNeteaseMusic";
 
 
-if ($hon.isRequest) {
+if ($init.isRequest) {
     GetCookie()
-    $hon.end()
+    $init.end()
 } else {
     cookieNeteaseMusicBean()
-    $hon.end()
+    $init.end()
 }
 
 function cookieNeteaseMusicBean() {
     const pc = `http://music.163.com/api/point/dailyTask?type=1`;
     const mobile = `http://music.163.com/api/point/dailyTask?type=0`;
 
-    const cookieVal = $hon.read(cookieKey)
+    const cookieVal = $init.read(cookieKey)
 
     let signInfo = {
         pc: {
@@ -116,7 +116,7 @@ function checkResult(signInfo) {
             } else {
                 detail += `${signInfo.app.title} 未知错误，详见日志!!`;
             }
-            $hon.notify(title, subTitle, detail);
+            $init.notify(title, subTitle, detail);
         }
     } catch (e) {
         console.log(`网易云音乐签到-error:${e}`);
@@ -127,25 +127,25 @@ function checkResult(signInfo) {
 function GetCookie() {
     if ($request.headers) {
         var CookieValue = $request.headers['Cookie'];
-        if ($hon.read(cookieKey) != (undefined || null)) {
-            if ($hon.read(cookieKey) != CookieValue) {
-                var cookie = $hon.write(CookieValue, cookieKey);
+        if ($init.read(cookieKey) != (undefined || null)) {
+            if ($init.read(cookieKey) != CookieValue) {
+                var cookie = $init.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $hon.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
-            var cookie = $hon.write(CookieValue, cookieKey);
+            var cookie = $init.write(CookieValue, cookieKey);
             if (!cookie) {
-                $hon.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $hon.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
-        $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
 
