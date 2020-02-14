@@ -1,6 +1,6 @@
 
 const title = '10010+'
-const phone = "15677351942"; //填入联通号码，使用前请登陆一次联通支付宝小程序
+const phone = "156xxxxxxxx"; //填入联通号码，使用前请登陆一次联通支付宝小程序
 
 const $hon = init();
 
