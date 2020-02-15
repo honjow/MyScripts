@@ -72,33 +72,42 @@ function cookieNeteaseMusicBean() {
             Cookie: cookieVal
         }
     };
-    $task.fetch(pcUrl).then(response => {
-        let result = JSON.parse(response.body)
-        signInfo.pc.processed = true;
-        signInfo.pc.resultCode = result.code;
-        signInfo.pc.resultMsg = result.msg;
-        console.log(`${signInfo.pc.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
-        checkResult(signInfo);
-    }, reason => {
-        signInfo.pc.processed = true;
-        signInfo.pc.resultCode = 999;
-        console.log(`网易云音乐(PC) 签到错误:${reason.error}`);
-        checkResult(signInfo);
+    $hon.get(pcUrl, (error, response, body) => {
+
+        if (!error) {
+            let result = JSON.parse(body)
+            signInfo.pc.processed = true;
+            signInfo.pc.resultCode = result.code;
+            signInfo.pc.resultMsg = result.msg;
+            console.log(`${signInfo.pc.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
+            checkResult(signInfo);
+        }
+        else {
+            signInfo.pc.processed = true;
+            signInfo.pc.resultCode = 999;
+            console.log(`网易云音乐(PC) 签到错误:${error}`);
+            checkResult(signInfo);
+        }
     });
 
-    $task.fetch(appUrl).then(response => {
-        let result = JSON.parse(response.body)
-        signInfo.app.processed = true;
-        signInfo.app.resultCode = result.code;
-        signInfo.app.resultMsg = result.msg;
-        console.log(`${signInfo.app.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
-        checkResult(signInfo);
-    }, reason => {
-        signInfo.app.processed = true;
-        signInfo.app.resultCode = 999;
-        console.log(`网易云音乐(APP) 签到错误:${reason.error}`);
-        checkResult(signInfo);
-    })
+    $hon.get(appUrl, (error, response, body) => {
+
+        if (!error) {
+            let result = JSON.parse(body)
+            signInfo.app.processed = true;
+            signInfo.app.resultCode = result.code;
+            signInfo.app.resultMsg = result.msg;
+            console.log(`${signInfo.app.title}-开始签到, 编码: ${result.code}, 原因: ${result.msg}`)
+            checkResult(signInfo);
+        }
+        else {
+            signInfo.app.processed = true;
+            signInfo.app.resultCode = 999;
+            console.log(`网易云音乐(APP) 签到错误:${error}`);
+            checkResult(signInfo);
+        }
+    });
+
 }
 
 function checkResult(signInfo) {
