@@ -131,17 +131,17 @@ function GetCookie() {
             if ($init.read(cookieKey) != CookieValue) {
                 var cookie = $init.write(CookieValue, cookieKey);
                 if (!cookie) {
-                    $init.notify("更新" + cookieName + "Cookie失败‼️", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
                 } else {
-                    $init.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
+                    $hon.notify("更新" + cookieName + "Cookie成功 🎉", "", "");
                 }
             }
         } else {
             var cookie = $init.write(CookieValue, cookieKey);
             if (!cookie) {
-                $init.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie失败‼️", "", "");
             } else {
-                $init.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
+                $hon.notify("首次写入" + cookieName + "Cookie成功 🎉", "", "");
             }
         }
     } else {
