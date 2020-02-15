@@ -116,7 +116,7 @@ function checkResult(signInfo) {
             } else {
                 detail += `${signInfo.app.title} 未知错误，详见日志!!`;
             }
-            $init.notify(title, subTitle, detail);
+            $hon.notify(title, subTitle, detail);
         }
     } catch (e) {
         console.log(`网易云音乐签到-error:${e}`);
@@ -145,7 +145,7 @@ function GetCookie() {
             }
         }
     } else {
-        $init.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
+        $hon.notify("写入" + cookieName + "Cookie失败‼️", "", "配置错误, 无法读取请求头 ");
     }
 }
 
