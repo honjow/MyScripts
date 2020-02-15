@@ -1,6 +1,15 @@
 /*
  网易云音乐二合一签到脚本
 
+ -------------
+ surge & loon
+
+ http-request https?:\/\/music\.163\.com max-size=0,script-path=https://raw.githubusercontent.com/honjow/MyScripts/master/NeteaseMusic-DailyBonus/NeteaseMusic-DailyBonus.js
+
+ cron "30 10 * * *" script-path=https://raw.githubusercontent.com/honjow/MyScripts/master/NeteaseMusic-DailyBonus/NeteaseMusic-DailyBonus.js
+
+ -------------
+ QX
 [mitm]
 hostname = music.163.com,
 
