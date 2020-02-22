@@ -1,6 +1,7 @@
 /*
  v2ex二合一签到脚本
 
+ QX
 [mitm]
 hostname = *.v2ex.com
 
@@ -14,6 +15,18 @@ hostname = *.v2ex.com
 [task_local]
 # V2EX签到 表示10点32执行签到
 32 10 * * * V2EX-DailyBonus.js
+
+----------------
+surge & loon
+
+[srcipt]
+# 此处用于V2EX cookie获取，浏览器打开https://www.v2ex.com/mission/daily 后提示成功即可
+http-request ^https:\/\/www\.v2ex\.com\/mission\/daily script-path=https://raw.githubusercontent.com/honjow/MyScripts/master/V2EX-DailyBonus/V2EX-DailyBonus.js, max-size=0
+
+cron "8 10 * * *" script-path=https://raw.githubusercontent.com/honjow/MyScripts/master/V2EX-DailyBonus/V2EX-DailyBonus.js
+
+[mitm]
+hostname = *.v2ex.com
 
 */
 
