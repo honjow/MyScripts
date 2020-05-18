@@ -102,6 +102,9 @@ function GetCookie() {
         var CookieValue = $request.headers['Cookie'];
         if ($hon.read(cookieKey) != (undefined || null)) {
             if ($hon.read(cookieKey) != CookieValue) {
+                // 测试
+                console.log('CookieValue new:' + CookieValue);
+                console.log('CookieValue save:' + $hon.read(cookieKey));
                 var cookie = $hon.write(CookieValue, cookieKey);
                 if (!cookie) {
                     $hon.notify("更新" + cookieName + "Cookie失败‼️", "", "");
